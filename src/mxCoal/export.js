@@ -27,7 +27,7 @@ function intToDate(intDate)
 
 function displayData(ctx)
 {
-  chrome.storage.sync.get(null, items => {
+  chrome.storage.local.get(null, items => {
     ctx.value = JSON.stringify(items)
   });
 }
@@ -37,7 +37,7 @@ function saveData(ctx)
 {
 	const data = JSON.parse(ctx.value);
 	console.info(data);
-	chrome.storage.sync.get(null, items => {
+	chrome.storage.local.get(null, items => {
 		var toRemove = [];
 		if (items) {
 			Object.keys(items).forEach(x => {
@@ -49,13 +49,13 @@ function saveData(ctx)
 		if (toRemove.length > 0)
 		{
 			console.info(toRemove);
-			chrome.storage.sync.remove(toRemove, function() {
-				chrome.storage.sync.set(data);
+			chrome.storage.local.remove(toRemove, function() {
+				chrome.storage.local.set(data);
 			});
 		}
 		else
 		{
-			chrome.storage.sync.set(data);
+			chrome.storage.local.set(data);
 		}
   });
 }

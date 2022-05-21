@@ -34,7 +34,7 @@ window.addEventListener("onAccountInfo", function(evt) {
     || this.cache['lastAccountId'] != accountId
   ) {
     this.cache['lastAccountId'] = accountId;
-    chrome.storage.sync.set({lastAccountId: accountId});
+    chrome.storage.local.set({lastAccountId: accountId});
     // console.info('lastAccountId: ' + accountId);
   }
   if (
@@ -45,7 +45,7 @@ window.addEventListener("onAccountInfo", function(evt) {
     // console.info('cache hit');
     return;
   }
-  chrome.storage.sync.get(accountId, items => {
+  chrome.storage.local.get(accountId, items => {
     // console.info(['get', items]);
     if (
       items
@@ -77,7 +77,7 @@ window.addEventListener("onAccountInfo", function(evt) {
       b.unshift(today);
 
       modified[accountId].data.unshift(b);
-      chrome.storage.sync.set(modified);
+      chrome.storage.local.set(modified);
       // console.info(['set', modified]);
       this.cache[accountId] = modified[accountId];
     }

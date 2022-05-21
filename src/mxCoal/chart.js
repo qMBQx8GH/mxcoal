@@ -27,9 +27,9 @@ function intToDate(intDate)
 
 function displayData(ctx)
 {
-  chrome.storage.sync.get('lastAccountId', items => {
+  chrome.storage.local.get('lastAccountId', items => {
     if (items && items['lastAccountId']) {
-      chrome.storage.sync.get(items['lastAccountId'], jtems => {
+      chrome.storage.local.get(items['lastAccountId'], jtems => {
         if (jtems && jtems[items['lastAccountId']] && jtems[items['lastAccountId']]['data']) {
           var accountInfo = jtems[items['lastAccountId']]['info'];
 

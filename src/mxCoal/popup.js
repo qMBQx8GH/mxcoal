@@ -30,16 +30,17 @@ function populateData(dataTable, accountName)
   var old_tbody = dataTable.getElementsByTagName('tbody')[0];
   var new_tbody = document.createElement('tbody');
   //populate_with_new_rows(new_tbody);
-  chrome.storage.sync.get('lastAccountId', items => {
+  chrome.storage.local.get('lastAccountId', items => {
     if (items && items['lastAccountId']) {
-      chrome.storage.sync.get(items['lastAccountId'], jtems => {
+      chrome.storage.local.get(items['lastAccountId'], jtems => {
         if (jtems && jtems[items['lastAccountId']] && jtems[items['lastAccountId']]['data']) {
           var accountInfo = jtems[items['lastAccountId']]['info'];
           accountName.innerHTML = accountInfo.name;
 
+          const rowsToDisplay = 7;
           const columnsToDisplay = [1, 3, 4, 6];
           var data = jtems[items['lastAccountId']]['data'];
-          for (var i = 0; i < data.length; i++) {
+          for (var i = 0; i < Math.min(data.length, rowsToDisplay); i++) {
             var newRow = new_tbody.insertRow();
 
             var newCell = newRow.insertCell();
