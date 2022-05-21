@@ -18,32 +18,31 @@
                 dataDOMElement.style.height = 0;
                 dataDOMElement.style.overflow = 'hidden';
                 document.body.appendChild(dataDOMElement);
-		console.info(this.response);
+                console.info(this.response);
             }
         });
         return send.apply(this, arguments);
     };
   })();
 */
-(function() {
-  const {fetch: origFetch} = window;
+(function () {
+  const { fetch: origFetch } = window;
   window.fetch = async (...args) => {
     // console.log("fetch called with args:", args);
     const response = await origFetch(...args);
-    if (args && args[0].includes('/api/account/info/'))
-    {
+    if (args && args[0].includes('/api/account/info/')) {
       response
         .clone()
         .json()
         .then(body => {
           if (body && !!body.id && !!body.name && !!body.balance) {
             // console.info(body);
-            var event = new CustomEvent("onAccountInfo", {detail: body});
+            var event = new CustomEvent("onAccountInfo", { detail: body });
             window.dispatchEvent(event);
           }
         })
         .catch(err => console.error(err))
-      ;
+        ;
     }
     return response;
   };

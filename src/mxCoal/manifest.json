@@ -29,13 +29,17 @@
         "https://armory.worldofwarships.com/*",
         "https://armory.worldofwarships.ru/*"
       ],
-      "js": ["contentScript.js"],
+      "js": [
+        "contentScript.js"
+      ],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["injectedScript.js"],
+      "resources": [
+        "injectedScript.js"
+      ],
       "matches": [
         "https://armory.worldofwarships.asia/*",
         "https://armory.worldofwarships.eu/*",

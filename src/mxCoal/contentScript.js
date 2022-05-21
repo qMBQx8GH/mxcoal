@@ -1,7 +1,7 @@
 function interceptData() {
   var xhrOverrideScript = document.createElement('script');
   xhrOverrideScript.src = chrome.runtime.getURL('injectedScript.js');
-  xhrOverrideScript.onload = function() {
+  xhrOverrideScript.onload = function () {
     this.remove();
   };
   (document.head || document.documentElement).appendChild(xhrOverrideScript);
@@ -16,11 +16,11 @@ function checkForDOM() {
 }
 requestIdleCallback(checkForDOM);
 
-window.addEventListener("onAccountInfo", function(evt) {
-   var todayDate = new Date();
-   var today = parseInt(
+window.addEventListener("onAccountInfo", function (evt) {
+  var todayDate = new Date();
+  var today = parseInt(
     todayDate.getFullYear()
-    + ('0' + (todayDate.getMonth()+1)).slice(-2)
+    + ('0' + (todayDate.getMonth() + 1)).slice(-2)
     + ('0' + todayDate.getDate()).slice(-2)
   );
   // console.info(evt.detail);
@@ -34,7 +34,7 @@ window.addEventListener("onAccountInfo", function(evt) {
     || this.cache['lastAccountId'] != accountId
   ) {
     this.cache['lastAccountId'] = accountId;
-    chrome.storage.local.set({lastAccountId: accountId});
+    chrome.storage.local.set({ lastAccountId: accountId });
     // console.info('lastAccountId: ' + accountId);
   }
   if (
@@ -63,7 +63,7 @@ window.addEventListener("onAccountInfo", function(evt) {
         }
       };
 
-      var b = ['credits','gold','coal','steel','paragon_xp','free_xp'];
+      var b = ['credits', 'gold', 'coal', 'steel', 'paragon_xp', 'free_xp'];
       for (var i = 0; i < b.length; i++) {
         var found = 0;
         for (var j = 0; j < accountInfo.balance.length; j++) {

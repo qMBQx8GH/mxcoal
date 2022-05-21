@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="export.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  </head>
-  <body>
+
+<head>
+  <link rel="stylesheet" href="export.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
   <div class="container">
-  <form>
-    <div class="mb-3">
-    <textarea class="form-control" id="myData" rows="10"></textarea>
-    </div>
-    <div class="mb-3">
-    <label for="saveData" class="form-label">Save text area content to the extention database</label>
-    <button id="saveData" class="btn btn-primary">Save</button>
-    </div>
-    <div class="mb-3">
-    <label for="displayData" class="form-label">or update text area content with the database content</label>
-    <button id="displayData" class="btn btn-primary">Reload</button>
-    </div>
-    <div class="mb-3">
-    <label for="downloadData" class="form-label">or save text area content to a local file</label>
-    <button id="downloadData" class="btn btn-primary">Download</button>
-    </div>
-    <div class="mb-3">
-    <label for="uploadData" class="form-label">or upload a file (then you may save uploaded content to the database)</label>
-    <input id="uploadData" type="file" name="files[]" accept=".json" class="form-control">
-    </div>
+    <form>
+      <div class="mb-3">
+        <textarea class="form-control" id="myData" rows="10"></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="saveData" class="form-label">Save text area content to the extention database</label>
+        <button id="saveData" class="btn btn-primary">Save</button>
+      </div>
+      <div class="mb-3">
+        <label for="displayData" class="form-label">or update text area content with the database content</label>
+        <button id="displayData" class="btn btn-primary">Reload</button>
+      </div>
+      <div class="mb-3">
+        <label for="downloadData" class="form-label">or save text area content to a local file</label>
+        <button id="downloadData" class="btn btn-primary">Download</button>
+      </div>
+      <div class="mb-3">
+        <label for="uploadData" class="form-label">or upload a file (then you may save uploaded content to the
+          database)</label>
+        <input id="uploadData" type="file" name="files[]" accept=".json" class="form-control">
+      </div>
     </form>
-    </div>
-    <script src="export.js"></script>
-  </body>
+  </div>
+  <script src="export.js"></script>
+</body>
+
 </html>
