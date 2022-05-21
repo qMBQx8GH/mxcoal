@@ -6,5 +6,6 @@
   "steel": {"message": "Steel"},
   "credits": {"message": "Credits"},
   "freexp": {"message": "Free XP"},
+  "view_all": {"message": "View all"},
   "dump": {"message": ""}
 }

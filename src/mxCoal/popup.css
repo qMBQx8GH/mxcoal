@@ -5,6 +5,9 @@ body {
   font-size: 14px;
   background-color: #1e3140;
 }
+a {
+  color: #6084A0;
+}
 .data-table {
   border-collapse: collapse;
   margin-top: 8px;

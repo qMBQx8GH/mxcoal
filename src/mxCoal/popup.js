@@ -74,3 +74,10 @@ document.getElementById('chartIcon').addEventListener("click", () => {
     url: 'chart.html'
   });
 });
+
+document.getElementById('dataLink').addEventListener("click", () => {
+  chrome.tabs.create({
+    url: 'data.html'
+  });
+  return false;
+});
