@@ -1,0 +1,10 @@
+{
+  "extention_name": {"message": "Уголёк"},
+  "extention_description": {"message": "Помогает отслеживать прогресс сбора угля."},
+  "date": {"message": "Дата"},
+  "coal": {"message": "Уголь"},
+  "steel": {"message": "Сталь"},
+  "credits": {"message": "Серебро"},
+  "freexp": {"message": "Свободка"},
+  "dump": {"message": ""}
+}
