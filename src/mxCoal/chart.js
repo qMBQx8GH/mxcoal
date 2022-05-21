@@ -1,27 +1,3 @@
-function localizeHtmlPage() {
-  //Localize by replacing __MSG_***__ meta tags
-  var objects = document.getElementsByTagName('html');
-  for (var j = 0; j < objects.length; j++) {
-    var obj = objects[j];
-
-    var valStrH = obj.innerHTML.toString();
-    var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function (match, v1) {
-      return v1 ? chrome.i18n.getMessage(v1) : "";
-    });
-
-    if (valNewH != valStrH) {
-      obj.innerHTML = valNewH;
-    }
-  }
-}
-
-localizeHtmlPage();
-
-function intToDate(intDate) {
-  var strDate = intDate.toString();
-  return strDate.substring(0, 4) + '-' + strDate.substring(4, 6) + '-' + strDate.substring(6, 8);
-}
-
 function displayData(ctx) {
   chrome.storage.local.get('lastAccountId', items => {
     if (items && items['lastAccountId']) {
