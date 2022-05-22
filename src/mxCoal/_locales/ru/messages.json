@@ -6,5 +6,7 @@
   "steel": {"message": "Сталь"},
   "credits": {"message": "Серебро"},
   "freexp": {"message": "Свободка"},
+  "chart": {"message": "Графики"},
+  "data": {"message": "Таблица"},
   "dump": {"message": ""}
 }

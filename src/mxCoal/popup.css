@@ -46,14 +46,14 @@ a {
   display: inline-block;
 }
 
-#chartIcon {
-  width: 16px;
-  height: 16px;
-  background-image: url(chart.png);
+#toolbar {
   float: right;
-  cursor: pointer;
 }
 
-#chartIcon:hover {
+#toolbar a {
+  margin-left: 4px;
+}
+
+#toolbar a:hover {
   border: 1px solid #d0d0d0;
 }

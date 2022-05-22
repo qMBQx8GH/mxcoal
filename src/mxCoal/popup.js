@@ -46,10 +46,12 @@ document.getElementById('chartIcon').addEventListener("click", () => {
     url: 'chart.html'
   });
 });
+document.getElementById('chartIcon').title = chrome.i18n.getMessage('chart');
 
-document.getElementById('dataLink').addEventListener("click", () => {
+document.getElementById('dataIcon').addEventListener("click", () => {
   chrome.tabs.create({
     url: 'data.html'
   });
   return false;
 });
+document.getElementById('dataIcon').title = chrome.i18n.getMessage('data');
