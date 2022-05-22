@@ -1,0 +1,17 @@
+body {
+  padding: 0.5rem 0.5rem;
+}
+
+#dataTable thead th {
+  position: sticky;
+  top: 0px;
+  background-color: #fff;
+}
+
+#dataTable tbody td:not(:first-child) {
+  text-align: right;
+}
+
+#dataTable thead th:not(:first-child) {
+  text-align: right;
+}
