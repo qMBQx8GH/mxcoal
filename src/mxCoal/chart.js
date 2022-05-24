@@ -1,4 +1,77 @@
-function displayData(mainMenu, lastAccountId = '') {
+function MxCoalChart(mainMenu, chart, settings = {}) {
+  this.lastAccountId = '';
+  this.columnToDisplay = 3; //coal
+  this.columnLabel = chrome.i18n.getMessage('coal');
+  this.mainMenu = mainMenu;
+  this.chart = new Chart(chart, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: []
+    },
+    options: {
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'day'
+          },
+          ticks: {
+            source: 'data'
+          }
+        },
+        y: {
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+		display: false,
+          position: 'right'
+        }
+      },
+      animation: {
+      onComplete: function() {
+//  debugger;
+         var ctx = this.ctx;
+//         ctx.font = this.scale.font;
+//         ctx.fillStyle = this.scale.textColor
+//         ctx.textAlign = "center";
+//         ctx.textBaseline = "bottom";
+
+//         this.datasets.forEach(function (dataset) {
+//             dataset.points.forEach(function (points) {
+//                 ctx.fillText(points.value, points.x, points.y - 10);
+//             });
+//         })
+	      var canvasWidthvar = this.canvas.width;
+                var canvasHeight = this.canvas.height;
+                var constant = 114;
+                var fontsize = (canvasHeight / constant).toFixed(2);
+                //ctx.font="2.8em Verdana";
+                ctx.font = fontsize + "em Verdana";
+                ctx.textBaseline = "middle";
+                var total = 90;
+
+                var tpercentage = "33%";
+                console.log(total);
+                var textWidth = ctx.measureText(tpercentage).width;
+
+                var txtPosx = Math.round((canvasWidthvar - textWidth) / 2);
+                ctx.fillText(tpercentage, txtPosx, canvasHeight / 2);
+    }    }}
+  });
+  var _this = this;
+  Object.keys(settings).forEach( x => {
+    settings[x].addEventListener("click", () => {
+      _this.columnToDisplay = x;
+      _this.columnLabel = chrome.i18n.getMessage(settings[x].dataset.legend);
+      _this.displayData();
+    });
+  });
+}
+
+MxCoalChart.prototype.displayData = function () {
   chrome.storage.local.get(null, items => {
     Object.keys(items).forEach(x => {
       if (x != 'lastAccountId') {
@@ -10,63 +83,83 @@ function displayData(mainMenu, lastAccountId = '') {
         } else {
           var li = document.createElement('li');
           li.className = 'nav-item';
-          mainMenu.appendChild(li);
+          this.mainMenu.appendChild(li);
           var a = document.createElement('a');
           a.id = x;
           a.className = 'nav-link';
           a.href = '#';
           a.innerHTML = items[x].info.name;
+          var _this = this;
           a.addEventListener("click", () => {
-            displayData(mainMenu, x);
+            _this.lastAccountId = x;
+            _this.displayData();
             return false;
           });
 
           li.append(a);
         }
-      } else if (!lastAccountId) {
-        lastAccountId = items[x];
+      } else if (!this.lastAccountId) {
+        this.lastAccountId = items[x];
       }
     });
-    if (lastAccountId && document.getElementById(lastAccountId)) {
-      document.getElementById(lastAccountId).className += ' active';
+    if (this.lastAccountId && document.getElementById(this.lastAccountId)) {
+      document.getElementById(this.lastAccountId).className += ' active';
     }
-    if (lastAccountId) {
-      chrome.storage.local.get(lastAccountId, jtems => {
-        if (jtems && jtems[lastAccountId] && jtems[lastAccountId]['data']) {
-          var accountInfo = jtems[lastAccountId]['info'];
+    if (this.lastAccountId) {
+      chrome.storage.local.get(this.lastAccountId, items => {
+        if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
+          var accountInfo = items[this.lastAccountId]['info'];
 
-          const columnToDisplay = 3; // Coal
           var labels = [];
           var datas = [];
-          var data = jtems[lastAccountId]['data'];
+          var data = items[this.lastAccountId]['data'];
           for (var i = 0; i < data.length; i++) {
             labels.unshift(intToDate(data[i][0]));
             datas.unshift({
               x: labels[0],
-              y: data[i][columnToDisplay]
+              y: data[i][this.columnToDisplay]
             });
-            if (i == 0) window.mxCoalChart.options.scales['x'].max = labels[0];
+            if (i == 0) this.chart.options.scales['x'].max = labels[0];
           }
-          window.mxCoalChart.options.scales['x'].min = labels[0];
-          console.info([window.mxCoalChart.options.scales['x'].max]);
-          //window.mxCoalChart.data.labels = labels;
-          window.mxCoalChart.data.datasets = [
+          this.chart.options.scales['x'].min = labels[0];
+          console.info([this.chart.options.scales['x'].max]);
+          //this.data.labels = labels;
+          this.chart.data.datasets = [
             {
-              label: chrome.i18n.getMessage('coal'),
+              label: this.columnLabel,
               data: datas,
               fill: false,
               borderColor: 'rgb(75, 192, 192)',
               tension: 0.1
             }
           ];
+	  this.chart.data.datasets.push({
+		  label: 'charleston',
+		  data: [
+		  {x: this.chart.options.scales['x'].min, y: 15000},
+		  {x: this.chart.options.scales['x'].max, y: 15000}
+		  ],
+		  fill: false,
+		  borderColor: 'rgb(127, 0, 0)',
 
-          window.mxCoalChart.update();
+	});
+	  this.chart.data.datasets.push({
+		  label: 'Marblehead',
+		  data: [
+		  {x: this.chart.options.scales['x'].min, y: 34000},
+		  {x: this.chart.options.scales['x'].max, y: 34000}
+		  ],
+		  fill: false,
+		  borderColor: 'rgb(127, 0, 0)',
+
+	});
+
+          this.chart.update();
         }
       });
     }
   });
 }
-displayData(document.getElementById('main-menu'));
 
 const FORMATS = {
   datetime: 'MMM D, YYYY, h:mm:ss a',
@@ -162,32 +255,10 @@ window.Chart._adapters._date.override({
   }
 });
 
-
-window.mxCoalChart = new Chart(document.getElementById('myChart'), {
-  type: 'line',
-  data: {
-    labels: [],
-    datasets: []
-  },
-  options: {
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day'
-        },
-        ticks: {
-          source: 'data'
-        }
-      },
-      y: {
-        beginAtZero: true
-      }
-    },
-    plugins: {
-      legend: {
-        position: 'right'
-      }
-    }
-  }
+const mxCoalChart = new MxCoalChart(document.getElementById('main-menu'), document.getElementById('myChart'), {
+  1: document.getElementById('creditsChart'),
+  3: document.getElementById('coalChart'),
+  4: document.getElementById('steelChart'),
+  6: document.getElementById('freexpChart')
 });
+mxCoalChart.displayData();
