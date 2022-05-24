@@ -50,10 +50,13 @@ a {
   float: right;
 }
 
-#toolbar a {
+#toolbar img {
   margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid transparent;
 }
 
-#toolbar a:hover {
+#toolbar img:hover {
   border: 1px solid #d0d0d0;
 }
