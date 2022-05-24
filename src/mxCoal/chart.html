@@ -17,7 +17,30 @@
     </div>
     <div class="row">
       <div class="col-1">
-        Settings
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="displayChart" id="creditsChart">
+          <label class="form-check-label" for="creditsChart">
+            __MSG_credits__
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="displayChart" id="coalChart" checked>
+          <label class="form-check-label" for="coalChart">
+            __MSG_coal__
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="displayChart" id="steelChart">
+          <label class="form-check-label" for="steelChart">
+            __MSG_steel__
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="displayChart" id="freexpChart">
+          <label class="form-check-label" for="freexpChart">
+            __MSG_freexp__
+          </label>
+        </div>
       </div>
       <div class="col">
         <canvas id="myChart"></canvas>
