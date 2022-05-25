@@ -36,6 +36,86 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
   //                X      IX     VIII   VII    VI     V      IV     III
   this.ships = {
     coal: {
+      neustrashimy: {
+        color: '#014F86',
+        price: 296000,
+      },
+     max_immelman: {
+        color: '#01497C',
+        price: 264000,
+      },
+      grosser_kurfurst: {
+        color: '#01497C',
+        price: 256000,
+      },
+      napoli: {
+        color: '#01497C',
+        price: 252000,
+      },
+      yoshino: {
+        color: '#01497C',
+        price: 248000,
+      },
+      moscow: {
+        color: '#01497C',
+        price: 244000,
+      },
+      khabarovsk: {
+        color: '#01497C',
+        price: 240000,
+      },
+      salem: {
+        color: '#01497C',
+        price: 240000,
+      },
+      marceau: {
+        color: '#01497C',
+        price: 236000,
+      },
+      forrest_sherman: {
+        color: '#01497C',
+        price: 232000,
+      },
+      carnot: {
+        color: '#014F86',
+        price: 228000,
+      },
+      kearsarge: {
+        color: '#014F86',
+        price: 228000,
+      },
+      tulsa: {
+        color: '#014F86',
+        price: 228000,
+      },
+      marko_polo: {
+        color: '#014F86',
+        price: 228000,
+      },
+      z_44: {
+        color: '#014F86',
+        price: 228000,
+      },
+      pommern: {
+        color: '#014F86',
+        price: 228000,
+      },
+      flint: {
+        color: '#2C7DA0',
+        price: 168000,
+      },
+      duke_of_york: {
+        color: '#2C7DA0',
+        price: 101000,
+      },
+      lazo: {
+        color: '#2C7DA0',
+        price: 83000,
+      },
+      october_revolution: {
+        color: '#61A5C2',
+        price: 53500,
+      },
       blyskawica: {
         color: '#2C7DA0',
         price: 51000,
@@ -78,6 +158,42 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
       }
     },
     steel: {
+      franklin_d_roosevelt: {
+        color: '#013A63',
+        price: 33000,
+      },
+      shikishima: {
+        color: '#01497C',
+        price: 32000,
+      },
+      mecklenburg: {
+        color: '#014F86',
+        price: 31000,
+      },
+      incomparable: {
+        color: '#2A6F97',
+        price: 31000,
+      },
+      bourgogne: {
+        color: '#2C7DA0',
+        price: 30000,
+      },
+      austin: {
+        color: '#468FAF',
+        price: 29000,
+      },
+      stalingrad: {
+        color: '#61A5C2',
+        price: 28000,
+      },
+      plymouth: {
+        color: '#89C2D9',
+        price: 27000,
+      },
+      ragnar: {
+        color: '#A9D6E5',
+        price: 27000,
+      }
     }
   }
 
@@ -200,7 +316,7 @@ MxCoalChart.prototype.displayData = function () {
               label: chrome.i18n.getMessage(this.columnLabel),
               data: datas,
               fill: false,
-              borderColor: '#012A4A',
+              borderColor: 'rgb(75, 192, 192)',
               tension: 0.1
             }
           ];
