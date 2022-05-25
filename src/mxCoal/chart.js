@@ -40,7 +40,7 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
         color: '#014F86',
         price: 296000,
       },
-     max_immelman: {
+      max_immelman: {
         color: '#01497C',
         price: 264000,
       },
@@ -320,10 +320,12 @@ MxCoalChart.prototype.displayData = function () {
               tension: 0.1
             }
           ];
+          var hasShips = false;
           Object.keys(this.ships[this.columnLabel]).forEach(ship => {
             if (ships.includes(ship)) {
               document.getElementById('ship-' + ship).checked = false;
             } else {
+              hasShips = true;
               this.chart.data.datasets.push({
                 label: chrome.i18n.getMessage(ship) || ship,
                 data: [
@@ -337,7 +339,39 @@ MxCoalChart.prototype.displayData = function () {
             }
           });
 
-          this.chart.update();
+          if (hasShips) {
+            var datas = [];
+            var prev_x = false;
+            var prev_y = false;
+            for (var i = 0; i < data.length; i++) {
+              var x = new Date(intToDate(data[i][0]) + 'T00:00:00Z');
+              var y = data[i][this.columnToDisplay];
+              if (i > 0 && y < prev_y && x < prev_x) {
+                var delta = (prev_y - y) / (prev_x - x) * (24 * 3600 * 1000);
+                datas.push(delta);
+              }
+              prev_x = x;
+              prev_y = y;
+            }
+            console.info(datas);
+            if (datas.length > 1) {
+              var sum = 0.0;
+              for (var i = 0; i < datas.length; i++) {
+                sum += datas[i];
+              }
+              var avg = sum / datas.length;
+
+              var sum_sum = 0.0;
+              for (var i = 0; i < datas.length; i++) {
+                var dif = datas[i] - avg;
+                sum_sum += dif * dif;
+              }
+              var sigma = Math.sqrt(sum_sum / datas.length);
+              console.info([avg, sigma, avg - 3 * sigma, avg + 3 * sigma]);
+            }
+
+            this.chart.update();
+          }
         }
       });
     }
@@ -365,14 +399,14 @@ window.Chart._adapters._date.override({
   },
 
   parse: function (value, format) {
-    console.info(['parse', value, format]);
+    // console.info(['parse', value, format]);
     const date = new Date(value + 'T00:00:00Z');
-    console.info(['date', date]);
+    // console.info(['date', date]);
     return date;
   },
 
   format: function (time, format) {
-    console.info(['format', time, format]);
+    // console.info(['format', time, format]);
     var result = '';
     if (!isNaN(time)) {
       const date = new Date(time);
@@ -382,21 +416,21 @@ window.Chart._adapters._date.override({
     } else {
       result = NaN;
     }
-    console.info(['result', result]);
+    // console.info(['result', result]);
     return result;
   },
 
   add: function (time, amount, unit) {
-    console.info(['add', time, amount, unit]);
+    // console.info(['add', time, amount, unit]);
     if (unit == 'day') {
       const date = new Date(time + (1000 * 60 * 60 * 24) * amount);
-      console.info(['date', date]);
+      // console.info(['date', date]);
       return date;
     }
   },
 
   diff: function (max, min, unit) {
-    console.info(['diff', max, min, unit]);
+    // console.info(['diff', max, min, unit]);
     var date1 = new Date(min);
     var date2 = new Date(max);
     var result = null;
@@ -405,12 +439,12 @@ window.Chart._adapters._date.override({
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       result = diffDays;
     }
-    console.info(['result', result]);
+    // console.info(['result', result]);
     return result;
   },
 
   startOf: function (time, unit, weekday) {
-    console.info(['startOf', time, unit]);
+    // console.info(['startOf', time, unit]);
     if (isNaN(time)) {
       return NaN;
     }
@@ -419,7 +453,7 @@ window.Chart._adapters._date.override({
     date.setSeconds(0);
     date.setMinutes(0);
     date.setHours(0);
-    console.info(['date', date.toISOString()]);
+    // console.info(['date', date.toISOString()]);
     if (unit == 'day') {
       return date;
     }
@@ -431,7 +465,7 @@ window.Chart._adapters._date.override({
     date.setSeconds(0);
     date.setMinutes(0);
     date.setHours(0);
-    console.info(['endOf', time, unit, date.toISOString()]);
+    // console.info(['endOf', time, unit, date.toISOString()]);
     if (unit == 'day') {
       return date + (24 * 60 * 60 * 1000);
     }
