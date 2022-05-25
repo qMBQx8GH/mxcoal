@@ -1,7 +1,7 @@
-function MxCoalChart(mainMenu, chart, settings = {}) {
+function MxCoalChart(mainMenu, chart, resources = {}) {
   this.lastAccountId = '';
   this.columnToDisplay = 3; //coal
-  this.columnLabel = chrome.i18n.getMessage('coal');
+  this.columnLabel = 'coal';
   this.mainMenu = mainMenu;
   this.chart = new Chart(chart, {
     type: 'line',
@@ -26,80 +26,150 @@ function MxCoalChart(mainMenu, chart, settings = {}) {
       },
       plugins: {
         legend: {
-		display: false,
           position: 'right'
         }
       },
-      animation: {
-      onComplete: function() {
-//  debugger;
-         var ctx = this.ctx;
-//         ctx.font = this.scale.font;
-//         ctx.fillStyle = this.scale.textColor
-//         ctx.textAlign = "center";
-//         ctx.textBaseline = "bottom";
-
-//         this.datasets.forEach(function (dataset) {
-//             dataset.points.forEach(function (points) {
-//                 ctx.fillText(points.value, points.x, points.y - 10);
-//             });
-//         })
-	      var canvasWidthvar = this.canvas.width;
-                var canvasHeight = this.canvas.height;
-                var constant = 114;
-                var fontsize = (canvasHeight / constant).toFixed(2);
-                //ctx.font="2.8em Verdana";
-                ctx.font = fontsize + "em Verdana";
-                ctx.textBaseline = "middle";
-                var total = 90;
-
-                var tpercentage = "33%";
-                console.log(total);
-                var textWidth = ctx.measureText(tpercentage).width;
-
-                var txtPosx = Math.round((canvasWidthvar - textWidth) / 2);
-                ctx.fillText(tpercentage, txtPosx, canvasHeight / 2);
-    }    }}
+    }
   });
+  //https://coolors.co/palette/012a4a-013a63-01497c-014f86-2a6f97-2c7da0-468faf-61a5c2-89c2d9-a9d6e5
+  //012A4A 013A63 01497C 014F86 2A6F97 2C7DA0 468FAF 61A5C2 89C2D9 A9D6E5
+  //                X      IX     VIII   VII    VI     V      IV     III
+  this.ships = {
+    coal: {
+      blyskawica: {
+        color: '#2C7DA0',
+        price: 51000,
+      },
+      aigle: {
+        color: '#468FAF',
+        price: 48000,
+      },
+      gallant: {
+        color: '#468FAF',
+        price: 48000,
+      },
+      kirov: {
+        color: '#61A5C2',
+        price: 43000,
+      },
+      anshan: {
+        color: '#468FAF',
+        price: 40000,
+      },
+      hill: {
+        color: '#61A5C2',
+        price: 38000,
+      },
+      marblehead: {
+        color: '#61A5C2',
+        price: 34000,
+      },
+      yubari: {
+        color: '#89C2D9',
+        price: 25500
+      },
+      campbeltown: {
+        color: '#A9D6E5',
+        price: 19500
+      },
+      charleston: {
+        color: '#A9D6E5',
+        price: 15000
+      }
+    },
+    steel: {
+    }
+  }
+
   var _this = this;
-  Object.keys(settings).forEach( x => {
-    settings[x].addEventListener("click", () => {
+  Object.keys(resources).forEach(x => {
+    resources[x].addEventListener("click", () => {
       _this.columnToDisplay = x;
-      _this.columnLabel = chrome.i18n.getMessage(settings[x].dataset.legend);
+      _this.columnLabel = resources[x].dataset.legend;
       _this.displayData();
     });
   });
 }
 
 MxCoalChart.prototype.displayData = function () {
+  var ships = document.getElementById('ships');
+  ships.innerHTML = '';
+  if (this.ships[this.columnLabel]) {
+    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+      var div = document.createElement('div');
+      div.className = 'form-check';
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = 'checked'; //TODO
+      checkbox.className = 'form-check-input';
+      checkbox.id = 'ship-' + ship;
+      checkbox.dataset.ship = ship;
+      var _this = this;
+      checkbox.addEventListener("click", () => {
+        if (_this.lastAccountId) {
+          chrome.storage.local.get(_this.lastAccountId, items => {
+            if (items && items[_this.lastAccountId] && items[_this.lastAccountId]['data']) {
+              var ships = items[_this.lastAccountId]['ships'] ? items[_this.lastAccountId]['ships'] : [];
+              if (checkbox.checked && ships.includes(checkbox.dataset.ship)) {
+                ships.splice(ships.indexOf(checkbox.dataset.ship), 1);
+                chrome.storage.local.set(items, () => {
+                  _this.displayData();
+                });
+              }
+              if (!checkbox.checked && !ships.includes(checkbox.dataset.ship)) {
+                ships.push(checkbox.dataset.ship);
+                items[_this.lastAccountId]['ships'] = ships;
+                chrome.storage.local.set(items, () => {
+                  _this.displayData();
+                });
+              }
+            }
+          });
+        }
+        return false;
+      });
+      div.appendChild(checkbox);
+      var label = document.createElement('label');
+      label.className = 'form-check-label';
+      label.htmlFor = checkbox.id;
+      label.innerHTML = chrome.i18n.getMessage(ship) || ship;
+      div.appendChild(label);
+      ships.appendChild(div);
+    })
+  }
   chrome.storage.local.get(null, items => {
     Object.keys(items).forEach(x => {
-      if (x != 'lastAccountId') {
-        var a = document.getElementById(x);
-        if (a) {
-          if (a.className.indexOf(' active') >= 0) {
-            a.classList.remove('active');
+      switch (x) {
+        case 'lastAccountId':
+          if (!this.lastAccountId) {
+            this.lastAccountId = items[x];
           }
-        } else {
-          var li = document.createElement('li');
-          li.className = 'nav-item';
-          this.mainMenu.appendChild(li);
-          var a = document.createElement('a');
-          a.id = x;
-          a.className = 'nav-link';
-          a.href = '#';
-          a.innerHTML = items[x].info.name;
-          var _this = this;
-          a.addEventListener("click", () => {
-            _this.lastAccountId = x;
-            _this.displayData();
-            return false;
-          });
+          break;
+        default:
+          var a = document.getElementById(x);
+          if (a) {
+            if (a.className.indexOf(' active') >= 0) {
+              a.classList.remove('active');
+            }
+          } else {
+            var li = document.createElement('li');
+            li.className = 'nav-item';
+            this.mainMenu.appendChild(li);
+            var a = document.createElement('a');
+            a.id = x;
+            a.className = 'nav-link';
+            a.href = '#';
+            a.innerHTML = items[x].info.name;
+            var _this = this;
+            a.addEventListener("click", () => {
+              _this.lastAccountId = x;
+              _this.displayData();
+              return false;
+            });
 
-          li.append(a);
-        }
-      } else if (!this.lastAccountId) {
-        this.lastAccountId = items[x];
+            li.append(a);
+          }
+          break;
       }
     });
     if (this.lastAccountId && document.getElementById(this.lastAccountId)) {
@@ -109,10 +179,11 @@ MxCoalChart.prototype.displayData = function () {
       chrome.storage.local.get(this.lastAccountId, items => {
         if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
           var accountInfo = items[this.lastAccountId]['info'];
+          var data = items[this.lastAccountId]['data'];
+          var ships = items[this.lastAccountId]['ships'] ? items[this.lastAccountId]['ships'] : [];
 
           var labels = [];
           var datas = [];
-          var data = items[this.lastAccountId]['data'];
           for (var i = 0; i < data.length; i++) {
             labels.unshift(intToDate(data[i][0]));
             datas.unshift({
@@ -126,33 +197,29 @@ MxCoalChart.prototype.displayData = function () {
           //this.data.labels = labels;
           this.chart.data.datasets = [
             {
-              label: this.columnLabel,
+              label: chrome.i18n.getMessage(this.columnLabel),
               data: datas,
               fill: false,
-              borderColor: 'rgb(75, 192, 192)',
+              borderColor: '#012A4A',
               tension: 0.1
             }
           ];
-	  this.chart.data.datasets.push({
-		  label: 'charleston',
-		  data: [
-		  {x: this.chart.options.scales['x'].min, y: 15000},
-		  {x: this.chart.options.scales['x'].max, y: 15000}
-		  ],
-		  fill: false,
-		  borderColor: 'rgb(127, 0, 0)',
+          Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+            if (ships.includes(ship)) {
+              document.getElementById('ship-' + ship).checked = false;
+            } else {
+              this.chart.data.datasets.push({
+                label: chrome.i18n.getMessage(ship) || ship,
+                data: [
+                  { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
+                  { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
+                ],
+                fill: false,
+                borderColor: this.ships[this.columnLabel][ship].color,
 
-	});
-	  this.chart.data.datasets.push({
-		  label: 'Marblehead',
-		  data: [
-		  {x: this.chart.options.scales['x'].min, y: 34000},
-		  {x: this.chart.options.scales['x'].max, y: 34000}
-		  ],
-		  fill: false,
-		  borderColor: 'rgb(127, 0, 0)',
-
-	});
+              });
+            }
+          });
 
           this.chart.update();
         }

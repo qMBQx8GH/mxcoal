@@ -58,6 +58,7 @@ window.addEventListener("onAccountInfo", function (evt) {
       var modified = {};
       modified[accountId] = {
         data: items[accountId] && items[accountId]['data'] ? items[accountId]['data'] : [],
+        ships: items[accountId] && items[accountId]['ships'] ? items[accountId]['ships'] : [],
         info: {
           name: accountInfo.name
         }

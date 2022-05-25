@@ -8,5 +8,7 @@
   "freexp": {"message": "Free XP"},
   "chart": {"message": "Chart"},
   "data": {"message": "Data table"},
+  "charleston": {"message": "Charleston CA III"},
+  "campbeltown": {"message": "Campbeltown DD III"},
   "dump": {"message": ""}
 }

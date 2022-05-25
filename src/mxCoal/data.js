@@ -1,30 +1,37 @@
 function populateData(mainMenu, dataTable, lastAccountId = '') {
   chrome.storage.local.get(null, items => {
     Object.keys(items).forEach(x => {
-      if (x != 'lastAccountId') {
-        var a = document.getElementById(x);
-        if (a) {
-          if (a.className.indexOf(' active') >= 0) {
-            a.classList.remove('active');
+      switch (x) {
+        case 'lastAccountId':
+          if (!lastAccountId) {
+            lastAccountId = items[x];
           }
-        } else {
-          var li = document.createElement('li');
-          li.className = 'nav-item';
-          mainMenu.appendChild(li);
-          var a = document.createElement('a');
-          a.id = x;
-          a.className = 'nav-link';
-          a.href = '#';
-          a.innerHTML = items[x].info.name;
-          a.addEventListener("click", () => {
-            populateData(mainMenu, dataTable, x);
-            return false;
-          });
+          break;
+        default:
+          if (x != 'lastAccountId') {
+            var a = document.getElementById(x);
+            if (a) {
+              if (a.className.indexOf(' active') >= 0) {
+                a.classList.remove('active');
+              }
+            } else {
+              var li = document.createElement('li');
+              li.className = 'nav-item';
+              mainMenu.appendChild(li);
+              var a = document.createElement('a');
+              a.id = x;
+              a.className = 'nav-link';
+              a.href = '#';
+              a.innerHTML = items[x].info.name;
+              a.addEventListener("click", () => {
+                populateData(mainMenu, dataTable, x);
+                return false;
+              });
 
-          li.append(a);
-        }
-      } else if (!lastAccountId) {
-        lastAccountId = items[x];
+              li.append(a);
+            }
+          }
+          break;
       }
     });
     if (lastAccountId && document.getElementById(lastAccountId)) {
