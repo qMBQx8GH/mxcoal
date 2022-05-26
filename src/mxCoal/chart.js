@@ -296,7 +296,7 @@ MxCoalChart.prototype.displayData = function () {
         if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
           var accountInfo = items[this.lastAccountId]['info'];
           var data = items[this.lastAccountId]['data'];
-          var ships = items[this.lastAccountId]['ships'] ? items[this.lastAccountId]['ships'] : [];
+          var ships = items[this.lastAccountId]['ships'] || [];
 
           var labels = [];
           var datas = [];
@@ -321,23 +321,25 @@ MxCoalChart.prototype.displayData = function () {
             }
           ];
           var hasShips = false;
-          Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-            if (ships.includes(ship)) {
-              document.getElementById('ship-' + ship).checked = false;
-            } else {
-              hasShips = true;
-              this.chart.data.datasets.push({
-                label: chrome.i18n.getMessage(ship) || ship,
-                data: [
-                  { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
-                  { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
-                ],
-                fill: false,
-                borderColor: this.ships[this.columnLabel][ship].color,
+          if (this.ships[this.columnLabel]) {
+            Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+              if (ships.includes(ship)) {
+                document.getElementById('ship-' + ship).checked = false;
+              } else {
+                hasShips = true;
+                this.chart.data.datasets.push({
+                  label: chrome.i18n.getMessage(ship) || ship,
+                  data: [
+                    { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
+                    { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
+                  ],
+                  fill: false,
+                  borderColor: this.ships[this.columnLabel][ship].color,
 
-              });
-            }
-          });
+                });
+              }
+            });
+          }
 
           if (hasShips) {
             var datas = [];
@@ -367,11 +369,27 @@ MxCoalChart.prototype.displayData = function () {
                 sum_sum += dif * dif;
               }
               var sigma = Math.sqrt(sum_sum / datas.length);
-              console.info([avg, sigma, avg - 3 * sigma, avg + 3 * sigma]);
-            }
+              var min = avg - 3 * sigma;
+              var max = avg + 3 * sigma;
+              console.info([avg, sigma, min, max]);
 
-            this.chart.update();
+              var filtered = [];
+              for (var i = 0; i < datas.length; i++) {
+                if (datas[i] > min && datas[i] < max) {
+                  filtered.push(datas[i]);
+                }
+              }
+              if (filtered) {
+                sum = 0.0;
+                for (var i = 0; i < filtered.length; i++) {
+                  sum += filtered[i];
+                }
+                avg = sum / filtered.length;
+                console.info([avg]);
+              }
+            }
           }
+          this.chart.update();
         }
       });
     }
