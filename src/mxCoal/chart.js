@@ -207,9 +207,49 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
   });
 }
 
-MxCoalChart.prototype.displayData = function () {
-  var ships = document.getElementById('ships');
-  ships.innerHTML = '';
+MxCoalChart.prototype.displayPlayerTabs = function (storageItems) {
+  Object.keys(storageItems).forEach(x => {
+    switch (x) {
+      case 'lastAccountId':
+        if (!this.lastAccountId) {
+          this.lastAccountId = storageItems[x];
+        }
+        break;
+      default:
+        var a = document.getElementById(x);
+        if (a) {
+          if (a.className.indexOf(' active') >= 0) {
+            a.classList.remove('active');
+          }
+        } else {
+          var li = document.createElement('li');
+          li.className = 'nav-item';
+          this.mainMenu.appendChild(li);
+          var a = document.createElement('a');
+          a.id = x;
+          a.className = 'nav-link';
+          a.href = '#';
+          a.innerHTML = storageItems[x].info.name;
+          var _this = this;
+          a.addEventListener("click", () => {
+            _this.lastAccountId = x;
+            _this.displayData();
+            return false;
+          });
+
+          li.append(a);
+        }
+        break;
+    }
+  });
+
+  if (this.lastAccountId && document.getElementById(this.lastAccountId)) {
+    document.getElementById(this.lastAccountId).className += ' active';
+  }
+}
+
+MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
+  shipsContainer.innerHTML = '';
   if (this.ships[this.columnLabel]) {
     Object.keys(this.ships[this.columnLabel]).forEach(ship => {
       var div = document.createElement('div');
@@ -250,146 +290,117 @@ MxCoalChart.prototype.displayData = function () {
       label.htmlFor = checkbox.id;
       label.innerHTML = chrome.i18n.getMessage(ship) || ship;
       div.appendChild(label);
-      ships.appendChild(div);
-    })
+      shipsContainer.appendChild(div);
+    });
   }
-  chrome.storage.local.get(null, items => {
-    Object.keys(items).forEach(x => {
-      switch (x) {
-        case 'lastAccountId':
-          if (!this.lastAccountId) {
-            this.lastAccountId = items[x];
-          }
-          break;
-        default:
-          var a = document.getElementById(x);
-          if (a) {
-            if (a.className.indexOf(' active') >= 0) {
-              a.classList.remove('active');
-            }
-          } else {
-            var li = document.createElement('li');
-            li.className = 'nav-item';
-            this.mainMenu.appendChild(li);
-            var a = document.createElement('a');
-            a.id = x;
-            a.className = 'nav-link';
-            a.href = '#';
-            a.innerHTML = items[x].info.name;
-            var _this = this;
-            a.addEventListener("click", () => {
-              _this.lastAccountId = x;
-              _this.displayData();
-              return false;
-            });
+}
 
-            li.append(a);
-          }
-          break;
+MxCoalChart.prototype.displayChart = function (storageItem) {
+  var accountInfo = storageItem['info'];
+  var data = storageItem['data'];
+  var ships = storageItem['ships'] || [];
+
+  var labels = [];
+  var datas = [];
+  for (var i = 0; i < data.length; i++) {
+    labels.unshift(intToDate(data[i][0]));
+    datas.unshift({
+      x: labels[0],
+      y: data[i][this.columnToDisplay]
+    });
+    if (i == 0) this.chart.options.scales['x'].max = labels[0];
+  }
+  this.chart.options.scales['x'].min = labels[0];
+  console.info([this.chart.options.scales['x'].max]);
+  //this.data.labels = labels;
+  this.chart.data.datasets = [
+    {
+      label: chrome.i18n.getMessage(this.columnLabel),
+      data: datas,
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    }
+  ];
+  var hasShips = false;
+  if (this.ships[this.columnLabel]) {
+    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+      if (ships.includes(ship)) {
+        document.getElementById('ship-' + ship).checked = false;
+      } else {
+        hasShips = true;
+        this.chart.data.datasets.push({
+          label: chrome.i18n.getMessage(ship) || ship,
+          data: [
+            { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
+            { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
+          ],
+          fill: false,
+          borderColor: this.ships[this.columnLabel][ship].color
+        });
       }
     });
-    if (this.lastAccountId && document.getElementById(this.lastAccountId)) {
-      document.getElementById(this.lastAccountId).className += ' active';
+  }
+
+  if (hasShips) {
+    var datas = [];
+    var prev_x = false;
+    var prev_y = false;
+    for (var i = 0; i < data.length; i++) {
+      var x = new Date(intToDate(data[i][0]) + 'T00:00:00Z');
+      var y = data[i][this.columnToDisplay];
+      if (i > 0 && y < prev_y && x < prev_x) {
+        var delta = (prev_y - y) / (prev_x - x) * (24 * 3600 * 1000);
+        datas.push(delta);
+      }
+      prev_x = x;
+      prev_y = y;
     }
+    console.info(datas);
+    if (datas.length > 1) {
+      var sum = 0.0;
+      for (var i = 0; i < datas.length; i++) {
+        sum += datas[i];
+      }
+      var avg = sum / datas.length;
+
+      var sum_sum = 0.0;
+      for (var i = 0; i < datas.length; i++) {
+        var dif = datas[i] - avg;
+        sum_sum += dif * dif;
+      }
+      var sigma = Math.sqrt(sum_sum / datas.length);
+      var min = avg - 3 * sigma;
+      var max = avg + 3 * sigma;
+      console.info([avg, sigma, min, max]);
+
+      var filtered = [];
+      for (var i = 0; i < datas.length; i++) {
+        if (datas[i] > min && datas[i] < max) {
+          filtered.push(datas[i]);
+        }
+      }
+      if (filtered) {
+        sum = 0.0;
+        for (var i = 0; i < filtered.length; i++) {
+          sum += filtered[i];
+        }
+        avg = sum / filtered.length;
+        console.info([avg]);
+      }
+    }
+  }
+  this.chart.update();
+}
+
+MxCoalChart.prototype.displayData = function () {
+  this.displayShipsList(document.getElementById('ships'));
+  chrome.storage.local.get(null, items => {
+    this.displayPlayerTabs(items);
     if (this.lastAccountId) {
       chrome.storage.local.get(this.lastAccountId, items => {
         if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
-          var accountInfo = items[this.lastAccountId]['info'];
-          var data = items[this.lastAccountId]['data'];
-          var ships = items[this.lastAccountId]['ships'] || [];
-
-          var labels = [];
-          var datas = [];
-          for (var i = 0; i < data.length; i++) {
-            labels.unshift(intToDate(data[i][0]));
-            datas.unshift({
-              x: labels[0],
-              y: data[i][this.columnToDisplay]
-            });
-            if (i == 0) this.chart.options.scales['x'].max = labels[0];
-          }
-          this.chart.options.scales['x'].min = labels[0];
-          console.info([this.chart.options.scales['x'].max]);
-          //this.data.labels = labels;
-          this.chart.data.datasets = [
-            {
-              label: chrome.i18n.getMessage(this.columnLabel),
-              data: datas,
-              fill: false,
-              borderColor: 'rgb(75, 192, 192)',
-              tension: 0.1
-            }
-          ];
-          var hasShips = false;
-          if (this.ships[this.columnLabel]) {
-            Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-              if (ships.includes(ship)) {
-                document.getElementById('ship-' + ship).checked = false;
-              } else {
-                hasShips = true;
-                this.chart.data.datasets.push({
-                  label: chrome.i18n.getMessage(ship) || ship,
-                  data: [
-                    { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
-                    { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
-                  ],
-                  fill: false,
-                  borderColor: this.ships[this.columnLabel][ship].color,
-
-                });
-              }
-            });
-          }
-
-          if (hasShips) {
-            var datas = [];
-            var prev_x = false;
-            var prev_y = false;
-            for (var i = 0; i < data.length; i++) {
-              var x = new Date(intToDate(data[i][0]) + 'T00:00:00Z');
-              var y = data[i][this.columnToDisplay];
-              if (i > 0 && y < prev_y && x < prev_x) {
-                var delta = (prev_y - y) / (prev_x - x) * (24 * 3600 * 1000);
-                datas.push(delta);
-              }
-              prev_x = x;
-              prev_y = y;
-            }
-            console.info(datas);
-            if (datas.length > 1) {
-              var sum = 0.0;
-              for (var i = 0; i < datas.length; i++) {
-                sum += datas[i];
-              }
-              var avg = sum / datas.length;
-
-              var sum_sum = 0.0;
-              for (var i = 0; i < datas.length; i++) {
-                var dif = datas[i] - avg;
-                sum_sum += dif * dif;
-              }
-              var sigma = Math.sqrt(sum_sum / datas.length);
-              var min = avg - 3 * sigma;
-              var max = avg + 3 * sigma;
-              console.info([avg, sigma, min, max]);
-
-              var filtered = [];
-              for (var i = 0; i < datas.length; i++) {
-                if (datas[i] > min && datas[i] < max) {
-                  filtered.push(datas[i]);
-                }
-              }
-              if (filtered) {
-                sum = 0.0;
-                for (var i = 0; i < filtered.length; i++) {
-                  sum += filtered[i];
-                }
-                avg = sum / filtered.length;
-                console.info([avg]);
-              }
-            }
-          }
-          this.chart.update();
+          this.displayChart(items[this.lastAccountId]);
         }
       });
     }
