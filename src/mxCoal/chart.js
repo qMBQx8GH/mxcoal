@@ -14,7 +14,7 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
         x: {
           type: 'time',
           time: {
-            unit: 'day'
+            //unit: 'day'
           },
           ticks: {
             source: 'data'
@@ -406,7 +406,7 @@ MxCoalChart.prototype.displayData = function () {
     }
   });
 }
-
+/*
 const FORMATS = {
   datetime: 'MMM D, YYYY, h:mm:ss a',
   millisecond: 'h:mm:ss.SSS a',
@@ -500,7 +500,7 @@ window.Chart._adapters._date.override({
     }
   }
 });
-
+*/
 const mxCoalChart = new MxCoalChart(document.getElementById('main-menu'), document.getElementById('myChart'), {
   1: document.getElementById('creditsChart'),
   3: document.getElementById('coalChart'),
