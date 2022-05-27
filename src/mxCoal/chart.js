@@ -251,7 +251,9 @@ MxCoalChart.prototype.displayPlayerTabs = function (storageItems) {
 MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
   shipsContainer.innerHTML = '';
   if (this.ships[this.columnLabel]) {
+    var container = document.createElement('div');
     Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+      container.id = shipsContainer.id;
       var div = document.createElement('div');
       div.className = 'form-check';
       var checkbox = document.createElement('input');
@@ -290,8 +292,9 @@ MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
       label.htmlFor = checkbox.id;
       label.innerHTML = chrome.i18n.getMessage(ship) || ship;
       div.appendChild(label);
-      shipsContainer.appendChild(div);
+      container.appendChild(div);
     });
+    shipsContainer.parentElement.replaceChild(container, shipsContainer);
   }
 }
 
