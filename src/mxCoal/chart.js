@@ -401,6 +401,29 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
         }
         avg = sum / filtered.length;
         console.info('avg: ' + avg);
+        if (avg > 0) {
+          var data_ext = [];
+          var start_y = data[0][this.columnToDisplay];
+          var start_x = new Date(intToDate(data[0][0]));
+          console.info([start_y, maxPrice, start_x]);
+          while (start_y < maxPrice) {
+            data_ext.push({
+              x: start_x.toISOString().split('T')[0],
+              y: start_y
+            });
+            start_y += Math.ceil(avg);
+            start_x.setDate(start_x.getDate() + 1);
+          }
+          console.info(data_ext);
+          this.chart.options.scales['x'].max = start_x.toISOString().split('T')[0];
+          this.chart.data.datasets.unshift({
+            label: '?',
+            data: [data_ext[0], data_ext[data_ext.length - 1]], //data_ext,
+            fill: false,
+            borderColor: 'rgb(255, 192, 192)',
+            borderDash: [5, 5],
+          });
+        }
       }
     }
   }
