@@ -298,6 +298,17 @@ MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
   }
 }
 
+MxCoalChart.prototype.adjustShipsList = function (storageItem) {
+  var ships = storageItem['ships'] || [];
+  if (this.ships[this.columnLabel]) {
+    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+      if (ships.includes(ship)) {
+        document.getElementById('ship-' + ship).checked = false;
+      }
+    });
+  }
+}
+
 MxCoalChart.prototype.displayChart = function (storageItem) {
   var accountInfo = storageItem['info'];
   var data = storageItem['data'];
@@ -311,11 +322,14 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
       x: labels[0],
       y: data[i][this.columnToDisplay]
     });
-    if (i == 0) this.chart.options.scales['x'].max = labels[0];
   }
-  this.chart.options.scales['x'].min = labels[0];
-  console.info([this.chart.options.scales['x'].max]);
-  //this.data.labels = labels;
+
+  if (labels.length > 0) {
+    this.chart.options.scales['x'].min = labels[0];
+    this.chart.options.scales['x'].max = labels[labels.length - 1];
+    console.info([this.chart.options.scales['x'].min, this.chart.options.scales['x'].max]);
+  }
+
   this.chart.data.datasets = [
     {
       label: chrome.i18n.getMessage(this.columnLabel),
@@ -325,27 +339,20 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
       tension: 0.1
     }
   ];
-  var hasShips = false;
+
+  var maxPrice = 0;
   if (this.ships[this.columnLabel]) {
     Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-      if (ships.includes(ship)) {
-        document.getElementById('ship-' + ship).checked = false;
-      } else {
-        hasShips = true;
-        this.chart.data.datasets.push({
-          label: chrome.i18n.getMessage(ship) || ship,
-          data: [
-            { x: this.chart.options.scales['x'].min, y: this.ships[this.columnLabel][ship].price },
-            { x: this.chart.options.scales['x'].max, y: this.ships[this.columnLabel][ship].price }
-          ],
-          fill: false,
-          borderColor: this.ships[this.columnLabel][ship].color
-        });
+      if (!ships.includes(ship)) {
+        var shipPrice = this.ships[this.columnLabel][ship].price;
+        if (maxPrice < shipPrice) {
+          maxPrice = shipPrice;
+        }
       }
     });
   }
 
-  if (hasShips) {
+  if (maxPrice > 0) {
     var datas = [];
     var prev_x = false;
     var prev_y = false;
@@ -366,16 +373,20 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
         sum += datas[i];
       }
       var avg = sum / datas.length;
+      console.info('avg: ' + avg);
 
       var sum_sum = 0.0;
       for (var i = 0; i < datas.length; i++) {
         var dif = datas[i] - avg;
         sum_sum += dif * dif;
       }
-      var sigma = Math.sqrt(sum_sum / datas.length);
-      var min = avg - 3 * sigma;
-      var max = avg + 3 * sigma;
-      console.info([avg, sigma, min, max]);
+      var sigma = sum_sum / datas.length;
+      console.info('sigma: ' + sigma);
+      var dispersion = Math.sqrt(sigma);
+      console.info('dispersion: ' + dispersion);
+      var min = avg - 3 * dispersion;
+      var max = avg + 3 * dispersion;
+      console.info([min, max]);
 
       var filtered = [];
       for (var i = 0; i < datas.length; i++) {
@@ -383,16 +394,34 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
           filtered.push(datas[i]);
         }
       }
-      if (filtered) {
+      if (filtered.length > 1) {
         sum = 0.0;
         for (var i = 0; i < filtered.length; i++) {
           sum += filtered[i];
         }
         avg = sum / filtered.length;
-        console.info([avg]);
+        console.info('avg: ' + avg);
       }
     }
   }
+
+  if (this.ships[this.columnLabel]) {
+    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
+      if (!ships.includes(ship)) {
+        var shipPrice = this.ships[this.columnLabel][ship].price;
+        this.chart.data.datasets.push({
+          label: chrome.i18n.getMessage(ship) || ship,
+          data: [
+            { x: this.chart.options.scales['x'].min, y: shipPrice },
+            { x: this.chart.options.scales['x'].max, y: shipPrice }
+          ],
+          fill: false,
+          borderColor: this.ships[this.columnLabel][ship].color
+        });
+      }
+    });
+  }
+
   this.chart.update();
 }
 
@@ -403,6 +432,7 @@ MxCoalChart.prototype.displayData = function () {
     if (this.lastAccountId) {
       chrome.storage.local.get(this.lastAccountId, items => {
         if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
+          this.adjustShipsList(items[this.lastAccountId]);
           this.displayChart(items[this.lastAccountId]);
         }
       });
