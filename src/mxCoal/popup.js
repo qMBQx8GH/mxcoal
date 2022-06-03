@@ -6,18 +6,15 @@ function MxCoalPopup(dataTable, accountName) {
 MxCoalPopup.prototype.displayTable = function (accountInfo, data) {
   this.accountName.innerHTML = accountInfo.name;
 
-  var old_tbody = this.dataTable.getElementsByTagName('tbody')[0];
-  var new_tbody = document.createElement('tbody');
-
   const rowsToDisplay = 7;
   const columnsToDisplay = [1, 3, 4, 6];
+
+  var new_tbody = document.createElement('tbody');
   for (var i = 0; i < Math.min(data.length, rowsToDisplay); i++) {
     var newRow = new_tbody.insertRow();
-
     var newCell = newRow.insertCell();
     var newText = document.createTextNode(intToDate(data[i][0]));
     newCell.appendChild(newText);
-
     columnsToDisplay.forEach(index => {
       newCell = newRow.insertCell();
       if (i > 0) {
@@ -32,6 +29,7 @@ MxCoalPopup.prototype.displayTable = function (accountInfo, data) {
       newCell.appendChild(newText);
     });
   }
+  var old_tbody = this.dataTable.getElementsByTagName('tbody')[0];
   this.dataTable.replaceChild(new_tbody, old_tbody);
 }
 
