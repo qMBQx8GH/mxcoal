@@ -406,15 +406,20 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
           var start_y = data[0][this.columnToDisplay];
           var start_x = new Date(intToDate(data[0][0]));
           console.info([start_y, maxPrice, start_x]);
-          while (start_y < maxPrice) {
+          data_ext.push({
+            x: start_x.toISOString().split('T')[0],
+            y: start_y
+          });
+          do {
+            start_y += Math.ceil(avg);
+            start_x.setDate(start_x.getDate() + 1);
             data_ext.push({
               x: start_x.toISOString().split('T')[0],
               y: start_y
             });
-            start_y += Math.ceil(avg);
-            start_x.setDate(start_x.getDate() + 1);
-          }
+          } while (start_y < maxPrice);
           console.info(data_ext);
+
           this.chart.options.scales['x'].max = start_x.toISOString().split('T')[0];
           this.chart.data.datasets.unshift({
             label: '?',
