@@ -1,8 +1,10 @@
-function MxCoalChart(mainMenu, chart, resources = {}) {
+function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = {}) {
   this.lastAccountId = '';
   this.columnToDisplay = 3; //coal
   this.columnLabel = 'coal';
   this.mainMenu = mainMenu;
+  this.discountCheckbox = discountCheckbox;
+  this.shipSelect = shipSelect;
   this.chart = new Chart(chart, {
     type: 'line',
     data: {
@@ -205,6 +207,14 @@ function MxCoalChart(mainMenu, chart, resources = {}) {
       _this.displayData();
     });
   });
+
+  this.shipSelect.addEventListener("change", () => {
+    _this.changeShip();
+  });
+
+  this.discountCheckbox.addEventListener("change", () => {
+    _this.changeShip();
+  });
 }
 
 MxCoalChart.prototype.displayPlayerTabs = function (storageItems) {
@@ -248,64 +258,40 @@ MxCoalChart.prototype.displayPlayerTabs = function (storageItems) {
   }
 }
 
-MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
-  shipsContainer.innerHTML = '';
-  if (this.ships[this.columnLabel]) {
-    var container = document.createElement('div');
-    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-      container.id = shipsContainer.id;
-      var div = document.createElement('div');
-      div.className = 'form-check';
-      var checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = 'checked'; //TODO
-      checkbox.className = 'form-check-input';
-      checkbox.id = 'ship-' + ship;
-      checkbox.dataset.ship = ship;
-      var _this = this;
-      checkbox.addEventListener("click", () => {
-        if (_this.lastAccountId) {
-          chrome.storage.local.get(_this.lastAccountId, items => {
-            if (items && items[_this.lastAccountId] && items[_this.lastAccountId]['data']) {
-              var ships = items[_this.lastAccountId]['ships'] ? items[_this.lastAccountId]['ships'] : [];
-              if (checkbox.checked && ships.includes(checkbox.dataset.ship)) {
-                ships.splice(ships.indexOf(checkbox.dataset.ship), 1);
-                chrome.storage.local.set(items, () => {
-                  _this.displayData();
-                });
-              }
-              if (!checkbox.checked && !ships.includes(checkbox.dataset.ship)) {
-                ships.push(checkbox.dataset.ship);
-                items[_this.lastAccountId]['ships'] = ships;
-                chrome.storage.local.set(items, () => {
-                  _this.displayData();
-                });
-              }
-            }
-          });
-        }
-        return false;
-      });
-      div.appendChild(checkbox);
-      var label = document.createElement('label');
-      label.className = 'form-check-label';
-      label.htmlFor = checkbox.id;
-      label.innerHTML = chrome.i18n.getMessage(ship) || ship;
-      div.appendChild(label);
-      container.appendChild(div);
+MxCoalChart.prototype.changeShip = function () {
+  if (this.lastAccountId) {
+    chrome.storage.local.get(this.lastAccountId, items => {
+      if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
+        var ships = items[this.lastAccountId]['ships'] || {};
+        ships[this.columnLabel] = [this.shipSelect.value, this.discountCheckbox.checked];
+        items[this.lastAccountId]['ships'] = ships;
+        chrome.storage.local.set(items, () => {
+          this.displayData();
+        });
+      }
     });
-    shipsContainer.parentElement.replaceChild(container, shipsContainer);
   }
 }
 
-MxCoalChart.prototype.adjustShipsList = function (storageItem) {
-  var ships = storageItem['ships'] || [];
-  if (this.ships[this.columnLabel]) {
+MxCoalChart.prototype.displayShipsList = function (shipsContainer) {
+   for(var i = shipsContainer.options.length - 1; i > 0; i--) {
+    shipsContainer.remove(i);
+   }
+   if (this.ships[this.columnLabel]) {
     Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-      if (ships.includes(ship)) {
-        document.getElementById('ship-' + ship).checked = false;
-      }
+      var label = chrome.i18n.getMessage(ship) || ship;
+      label += ' (' + this.ships[this.columnLabel][ship].price.toLocaleString() + ')';
+      shipsContainer.appendChild(new Option(label, ship));
     });
+  }
+}
+
+MxCoalChart.prototype.adjustShipsList = function (shipsData) {
+  console.info(shipsData)
+  console.info(this.columnLabel);
+  if (this.ships[this.columnLabel] && shipsData[this.columnLabel]) {
+    this.shipSelect.value = shipsData[this.columnLabel][0];
+    this.discountCheckbox.checked = shipsData[this.columnLabel][1];
   }
 }
 
@@ -340,19 +326,16 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
     }
   ];
 
-  var maxPrice = 0;
-  if (this.ships[this.columnLabel]) {
-    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-      if (!ships.includes(ship)) {
-        var shipPrice = this.ships[this.columnLabel][ship].price;
-        if (maxPrice < shipPrice) {
-          maxPrice = shipPrice;
-        }
-      }
-    });
+  var shipPrice = 0;
+  var ship = ships[this.columnLabel];
+  if (this.ships[this.columnLabel] && ship && this.ships[this.columnLabel][ship[0]]) {
+    shipPrice = this.ships[this.columnLabel][ship[0]].price;
+    if (ship[1]) {
+      shipPrice -= shipPrice * 0.25;
+    }
   }
 
-  if (maxPrice > 0 && data.length > 0 && maxPrice > data[0][this.columnToDisplay]) {
+  if (shipPrice > 0 && data.length > 0 && shipPrice > data[0][this.columnToDisplay]) {
     var datas = [];
     var prev_x = false;
     var prev_y = false;
@@ -405,7 +388,7 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
           var data_ext = [];
           var start_y = data[0][this.columnToDisplay];
           var start_x = new Date(intToDate(data[0][0]));
-          console.info([start_y, maxPrice, start_x]);
+          console.info([start_y, shipPrice, start_x]);
           data_ext.push({
             x: start_x.toISOString().split('T')[0],
             y: start_y
@@ -417,7 +400,7 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
               x: start_x.toISOString().split('T')[0],
               y: start_y
             });
-          } while (start_y < maxPrice);
+          } while (start_y < shipPrice);
           console.info(data_ext);
 
           this.chart.options.scales['x'].max = start_x.toISOString().split('T')[0];
@@ -433,20 +416,15 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
     }
   }
 
-  if (this.ships[this.columnLabel]) {
-    Object.keys(this.ships[this.columnLabel]).forEach(ship => {
-      if (!ships.includes(ship)) {
-        var shipPrice = this.ships[this.columnLabel][ship].price;
-        this.chart.data.datasets.push({
-          label: chrome.i18n.getMessage(ship) || ship,
-          data: [
-            { x: this.chart.options.scales['x'].min, y: shipPrice },
-            { x: this.chart.options.scales['x'].max, y: shipPrice }
-          ],
-          fill: false,
-          borderColor: this.ships[this.columnLabel][ship].color
-        });
-      }
+  if (this.ships[this.columnLabel] && ship && this.ships[this.columnLabel][ship[0]]) {
+    this.chart.data.datasets.push({
+      label: chrome.i18n.getMessage(ship[0]) || ship[0],
+      data: [
+        { x: this.chart.options.scales['x'].min, y: shipPrice },
+        { x: this.chart.options.scales['x'].max, y: shipPrice }
+      ],
+      fill: false,
+      borderColor: this.ships[this.columnLabel][ship[0]].color
     });
   }
 
@@ -460,7 +438,8 @@ MxCoalChart.prototype.displayData = function () {
     if (this.lastAccountId) {
       chrome.storage.local.get(this.lastAccountId, items => {
         if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
-          this.adjustShipsList(items[this.lastAccountId]);
+          var ships = items[this.lastAccountId]['ships'] || [];
+          this.adjustShipsList(ships);
           this.displayChart(items[this.lastAccountId]);
         }
       });
@@ -562,10 +541,15 @@ window.Chart._adapters._date.override({
   }
 });
 */
-const mxCoalChart = new MxCoalChart(document.getElementById('main-menu'), document.getElementById('myChart'), {
-  1: document.getElementById('creditsChart'),
-  3: document.getElementById('coalChart'),
-  4: document.getElementById('steelChart'),
-  6: document.getElementById('freexpChart')
+const mxCoalChart = new MxCoalChart(
+  document.getElementById('main-menu'),
+  document.getElementById('discount'),
+  document.getElementById('ships'),
+  document.getElementById('myChart'),
+  {
+    1: document.getElementById('creditsChart'),
+    3: document.getElementById('coalChart'),
+    4: document.getElementById('steelChart'),
+    6: document.getElementById('freexpChart')
 });
 mxCoalChart.displayData();

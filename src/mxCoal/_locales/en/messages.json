@@ -6,6 +6,8 @@
   "steel": {"message": "Steel"},
   "credits": {"message": "Credits"},
   "freexp": {"message": "Free XP"},
+  "discount": {"message": "Discount 25%"},
+  "choose_ship": {"message": "Choose a ship"},
   "chart": {"message": "Chart"},
   "data": {"message": "Data table"},
   "neustrashimy": {"message": "Неустрашимый DD IX"},

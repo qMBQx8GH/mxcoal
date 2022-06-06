@@ -7,8 +7,8 @@ function textNodesUnder(el) {
 function localizeHtmlPage() {
     //Localize by replacing __MSG_***__ meta tags
     var objects = document.getElementsByTagName('body');
-    for (var j = 0; j < objects.length; j++) {
-        textNodesUnder(objects[j]).forEach(obj => {
+    for (var i = 0; i < objects.length; i++) {
+        textNodesUnder(objects[i]).forEach(obj => {
             var valStrH = obj.nodeValue;
             var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function (match, v1) {
                 return v1 ? chrome.i18n.getMessage(v1) : "";

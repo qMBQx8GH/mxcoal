@@ -6,6 +6,8 @@
   "steel": {"message": "Сталь"},
   "credits": {"message": "Серебро"},
   "freexp": {"message": "Свободка"},
+  "discount": {"message": "Скидка 25%"},
+  "choose_ship": {"message": "Выберите корабль"},
   "chart": {"message": "Графики"},
   "data": {"message": "Таблица"},
   "neustrashimy": {"message": "Неустрашимый DD IX"},
