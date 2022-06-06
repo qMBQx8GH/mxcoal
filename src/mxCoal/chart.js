@@ -352,7 +352,7 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
     });
   }
 
-  if (maxPrice > 0) {
+  if (maxPrice > 0 && data.length > 0 && maxPrice > data[0][this.columnToDisplay]) {
     var datas = [];
     var prev_x = false;
     var prev_y = false;
