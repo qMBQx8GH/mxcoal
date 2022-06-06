@@ -421,8 +421,8 @@ MxCoalChart.prototype.displayChart = function (storageItem) {
           console.info(data_ext);
 
           this.chart.options.scales['x'].max = start_x.toISOString().split('T')[0];
-          this.chart.data.datasets.unshift({
-            label: '?',
+          this.chart.data.datasets.push({
+            label: chrome.i18n.getMessage(this.columnLabel),
             data: [data_ext[0], data_ext[data_ext.length - 1]], //data_ext,
             fill: false,
             borderColor: 'rgb(255, 192, 192)',
