@@ -33,6 +33,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
       },
     }
   });
+  this.discounts = {
+    coal: 0.75,
+    steel: 0.75
+  }
   //https://coolors.co/palette/012a4a-013a63-01497c-014f86-2a6f97-2c7da0-468faf-61a5c2-89c2d9-a9d6e5
   //012A4A 013A63 01497C 014F86 2A6F97 2C7DA0 468FAF 61A5C2 89C2D9 A9D6E5
   //                X      IX     VIII   VII    VI     V      IV     III
@@ -40,111 +44,111 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
     coal: {
       neustrashimy: {
         color: '#014F86',
-        price: 296000,
+        price: 296000
       },
       max_immelman: {
         color: '#01497C',
-        price: 264000,
+        price: 264000
       },
       grosser_kurfurst: {
         color: '#01497C',
-        price: 256000,
+        price: 256000
       },
       napoli: {
         color: '#01497C',
-        price: 252000,
+        price: 252000
       },
       yoshino: {
         color: '#01497C',
-        price: 248000,
+        price: 248000
       },
       moscow: {
         color: '#01497C',
-        price: 244000,
+        price: 244000
       },
       khabarovsk: {
         color: '#01497C',
-        price: 240000,
+        price: 240000
       },
       salem: {
         color: '#01497C',
-        price: 240000,
+        price: 240000
       },
       marceau: {
         color: '#01497C',
-        price: 236000,
+        price: 236000
       },
       forrest_sherman: {
         color: '#01497C',
-        price: 232000,
+        price: 232000
       },
       carnot: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       kearsarge: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       tulsa: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       marko_polo: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       z_44: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       pommern: {
         color: '#014F86',
-        price: 228000,
+        price: 228000
       },
       flint: {
         color: '#2C7DA0',
-        price: 168000,
+        price: 168000
       },
       duke_of_york: {
         color: '#2C7DA0',
-        price: 101000,
+        price: 101000
       },
       lazo: {
         color: '#2C7DA0',
-        price: 83000,
+        price: 83000
       },
       october_revolution: {
         color: '#61A5C2',
-        price: 53500,
+        price: 53500
       },
       blyskawica: {
         color: '#2C7DA0',
-        price: 51000,
+        price: 51000
       },
       aigle: {
         color: '#468FAF',
-        price: 48000,
+        price: 48000
       },
       gallant: {
         color: '#468FAF',
-        price: 48000,
+        price: 48000
       },
       kirov: {
         color: '#61A5C2',
-        price: 43000,
+        price: 43000
       },
       anshan: {
         color: '#468FAF',
-        price: 40000,
+        price: 40000
       },
       hill: {
         color: '#61A5C2',
-        price: 38000,
+        price: 38000
       },
       marblehead: {
         color: '#61A5C2',
-        price: 34000,
+        price: 34000
       },
       yubari: {
         color: '#89C2D9',
@@ -162,39 +166,57 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
     steel: {
       franklin_d_roosevelt: {
         color: '#013A63',
-        price: 33000,
+        price: 33000
       },
       shikishima: {
         color: '#01497C',
-        price: 32000,
+        price: 32000
       },
       mecklenburg: {
         color: '#014F86',
-        price: 31000,
+        price: 31000
       },
       incomparable: {
         color: '#2A6F97',
-        price: 31000,
+        price: 31000
       },
       bourgogne: {
         color: '#2C7DA0',
-        price: 30000,
+        price: 30000
       },
       austin: {
         color: '#468FAF',
-        price: 29000,
+        price: 29000
       },
       stalingrad: {
         color: '#61A5C2',
-        price: 28000,
+        price: 28000
       },
       plymouth: {
         color: '#89C2D9',
-        price: 27000,
+        price: 27000
       },
       ragnar: {
         color: '#A9D6E5',
-        price: 27000,
+        price: 27000
+      }
+    },
+    freexp: {
+      agir: {
+        color: '#014F86',
+        price: 1000000
+      },
+      groningen: {
+        color: '#014F86',
+        price: 1000000
+      },
+      azuma: {
+        color: '#014F86',
+        price: 1000000
+      },
+      hayate: {
+        color: '#01497C',
+        price: 2000000
       }
     }
   }
@@ -294,7 +316,8 @@ MxCoalChart.prototype.adjustShipsList = function (shipsData) {
     this.shipSelect.value = '';
     this.discountCheckbox.checked = false;
   }
-  this.shipSelect.parentElement.style.display = this.ships[this.columnLabel] ? '' : 'none';
+  this.shipSelect.style.display = this.ships[this.columnLabel] ? '' : 'none';
+  this.discountCheckbox.parentElement.style.display = this.discounts[this.columnLabel] ? '' : 'none';
 }
 
 MxCoalChart.prototype.sum = function (data) {

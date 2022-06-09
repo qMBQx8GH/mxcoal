@@ -49,5 +49,9 @@
   "stalingrad": {"message": "Сталинград CA X"},
   "plymouth": {"message": "Plymouth CA X"},
   "ragnar": {"message": "Ragnar DD X"},
+  "agir": {"message": "Ägir CA IX"},
+  "groningen": {"message": "Groningen DD IX"},
+  "azuma": {"message": "Azuma CA IX"},
+  "hayate": {"message": "Hayate DD X"},
   "dump": {"message": ""}
 }
