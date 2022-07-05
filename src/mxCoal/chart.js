@@ -52,6 +52,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
   //                X      IX     VIII   VII    VI     V      IV     III
   this.ships = {
     coal: {
+      black: {
+        color: '#014F86',
+        price: 296000
+      },
       neustrashimy: {
         color: '#014F86',
         price: 296000
