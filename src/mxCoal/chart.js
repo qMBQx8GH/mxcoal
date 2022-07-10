@@ -100,6 +100,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#014F86',
         price: 228000
       },
+      iwami: {
+        color: '#014F86',
+        price: 228000
+      },
       kearsarge: {
         color: '#014F86',
         price: 228000
