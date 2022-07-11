@@ -28,6 +28,8 @@ MxCoalPopup.prototype.displayTable = function (accountInfo, data) {
       newText = document.createTextNode(data[i][index].toLocaleString());
       newCell.appendChild(newText);
     });
+
+    chrome.action.setBadgeText({ text: '' });
   }
   var old_tbody = this.dataTable.getElementsByTagName('tbody')[0];
   this.dataTable.replaceChild(new_tbody, old_tbody);

@@ -81,6 +81,7 @@ window.addEventListener("onAccountInfo", function (evt) {
       chrome.storage.local.set(modified);
       // console.info(['set', modified]);
       this.cache[accountId] = modified[accountId];
+      chrome.runtime.sendMessage(undefined, {'setBadgeText': '1'});
     }
   });
 }, false);
