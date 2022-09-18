@@ -140,6 +140,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#61A5C2',
         price: 53500
       },
+      rio_de_janeiro: {
+        color: '#61A5C2',
+        price: 53000
+      },
       blyskawica: {
         color: '#2C7DA0',
         price: 51000
