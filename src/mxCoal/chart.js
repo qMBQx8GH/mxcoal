@@ -88,6 +88,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#01497C',
         price: 240000
       },
+      alvaro_de_bazan: {
+        color: '#014F86',
+        price: 238000
+      },
       marceau: {
         color: '#01497C',
         price: 236000
