@@ -60,6 +60,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#014F86',
         price: 296000
       },
+      malta: {
+        color: '#01497C',
+        price: 268000
+      },
       max_immelman: {
         color: '#01497C',
         price: 264000
