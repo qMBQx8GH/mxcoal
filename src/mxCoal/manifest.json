@@ -19,7 +19,8 @@
     "https://armory.worldofwarships.asia/",
     "https://armory.worldofwarships.eu/",
     "https://armory.worldofwarships.com/",
-    "https://armory.worldofwarships.ru/"
+    "https://armory.worldofwarships.ru/",
+    "https://armory.korabli.su/ru/"
   ],
   "background": {
     "service_worker": "background.js"
@@ -30,7 +31,8 @@
         "https://armory.worldofwarships.asia/*",
         "https://armory.worldofwarships.eu/*",
         "https://armory.worldofwarships.com/*",
-        "https://armory.worldofwarships.ru/*"
+        "https://armory.worldofwarships.ru/*",
+        "https://armory.korabli.su/*"
       ],
       "js": [
         "contentScript.js"
@@ -47,7 +49,8 @@
         "https://armory.worldofwarships.asia/*",
         "https://armory.worldofwarships.eu/*",
         "https://armory.worldofwarships.com/*",
-        "https://armory.worldofwarships.ru/*"
+        "https://armory.worldofwarships.ru/*",
+        "https://armory.korabli.su/*"
       ]
     }
   ]
