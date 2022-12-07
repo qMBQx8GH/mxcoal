@@ -1,10 +1,26 @@
 /* https://colorscheme.ru/#3x31Ticcvw0w0 */
 
+html, body {
+  padding: 0;
+}
+
+html, body, h2 {
+  margin: 0;
+}
+
 body {
   color: #fff;
   font-family: sans-serif;
   font-size: 14px;
   background-color: #1e3140;
+}
+
+header {
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
 }
 
 a {
@@ -13,7 +29,6 @@ a {
 
 .data-table {
   border-collapse: collapse;
-  margin-top: 8px;
 }
 
 .data-table thead tr {
@@ -42,16 +57,7 @@ a {
   font-size: 12px;
 }
 
-#accountName {
-  display: inline-block;
-}
-
-#toolbar {
-  float: right;
-}
-
 #toolbar img {
-  margin-left: 4px;
   width: 16px;
   height: 16px;
   border: 1px solid transparent;
