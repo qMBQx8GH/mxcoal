@@ -100,6 +100,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#014F86',
         price: 238000
       },
+      hayate: {
+        color: '#014F86',
+        price: 238000
+      },
       marceau: {
         color: '#01497C',
         price: 236000
@@ -107,6 +111,18 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
       forrest_sherman: {
         color: '#01497C',
         price: 232000
+      },
+      groningen: {
+        color: '#014F86',
+        price: 228000
+      },
+      azuma: {
+        color: '#014F86',
+        price: 228000
+      },
+      agir: {
+        color: '#014F86',
+        price: 228000
       },
       carnot: {
         color: '#014F86',
@@ -226,6 +242,10 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#61A5C2',
         price: 28000
       },
+      gato: {
+        color: '#61A5C2',
+        price: 28000
+      },
       plymouth: {
         color: '#89C2D9',
         price: 27000
@@ -236,22 +256,6 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
       }
     },
     freexp: {
-      agir: {
-        color: '#014F86',
-        price: 1000000
-      },
-      groningen: {
-        color: '#014F86',
-        price: 1000000
-      },
-      azuma: {
-        color: '#014F86',
-        price: 1000000
-      },
-      hayate: {
-        color: '#01497C',
-        price: 2000000
-      }
     }
   }
 
