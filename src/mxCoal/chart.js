@@ -254,8 +254,6 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
         color: '#A9D6E5',
         price: 27000
       }
-    },
-    freexp: {
     }
   }
 
@@ -607,7 +605,6 @@ const mxCoalChart = new MxCoalChart(
   {
     1: document.getElementById('creditsChart'),
     3: document.getElementById('coalChart'),
-    4: document.getElementById('steelChart'),
-    6: document.getElementById('freexpChart')
+    4: document.getElementById('steelChart')
   });
 mxCoalChart.displayData();
