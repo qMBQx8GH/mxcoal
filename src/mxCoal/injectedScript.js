@@ -44,6 +44,19 @@
         .catch(err => console.error(err))
         ;
     }
+    if (args && args[0].includes('/api/get_lootbox/')) {
+      response
+        .clone()
+        .json()
+        .then(body => {
+          // console.info(body);
+          if (body && !!body.status && body.status == 'ok' && !!body.data) {
+            console.info(' ' + body.data.id + ' ' + body.data.name + ' ' + body.data.title);
+          }
+        })
+        .catch(err => console.error(err))
+        ;
+    }
     return response;
   };
 })();
