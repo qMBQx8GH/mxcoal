@@ -4,6 +4,7 @@
   "date": {"message": "Дата"},
   "coal": {"message": "Уголь"},
   "steel": {"message": "Сталь"},
+  "gold": {"message": "Голда"},
   "credits": {"message": "Серебро"},
   "freexp": {"message": "Свободка"},
   "discount": {"message": "Скидка 25%"},

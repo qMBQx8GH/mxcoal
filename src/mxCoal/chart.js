@@ -624,6 +624,7 @@ const mxCoalChart = new MxCoalChart(
   document.getElementById('myChart'),
   {
     1: document.getElementById('creditsChart'),
+    2: document.getElementById('glodChart'),
     3: document.getElementById('coalChart'),
     4: document.getElementById('steelChart')
   });
