@@ -60,5 +60,10 @@
   "malta": {"message": "Malta CV X"},
   "tromp": {"message": "Tromp DD X"},
   "gato": {"message": "Gato SS X"},
+  "chateaurenault": {"message": "Châteaurenault DD X"},
+  "new_hampshire": {"message": "New Hampshire BB X"},
+  "komissar": {"message": "Комиссар CA X"},
+  "z42": {"message": "Z-42 DD X"},
+  "vallejo": {"message": "Vallejo CA IX"},
   "dump": {"message": ""}
 }

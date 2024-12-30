@@ -214,21 +214,37 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
       }
     },
     steel: {
+      chateaurenault: {
+        color: '#013A63',
+        price: 30000
+      },
       franklin_d_roosevelt: {
         color: '#013A63',
-        price: 33000
+        price: 30000
+      },
+      gato: {
+        color: '#61A5C2',
+        price: 30000
       },
       shikishima: {
         color: '#01497C',
-        price: 32000
+        price: 30000
       },
       mecklenburg: {
         color: '#014F86',
-        price: 31000
+        price: 30000
       },
       incomparable: {
         color: '#2A6F97',
-        price: 31000
+        price: 30000
+      },
+      new_hampshire: {
+        color: '#2C7DA0',
+        price: 30000
+      },
+      komissar: {
+        color: '#2C7DA0',
+        price: 30000
       },
       bourgogne: {
         color: '#2C7DA0',
@@ -236,23 +252,27 @@ function MxCoalChart(mainMenu, discountCheckbox, shipSelect, chart, resources = 
       },
       austin: {
         color: '#468FAF',
-        price: 29000
+        price: 30000
       },
       stalingrad: {
         color: '#61A5C2',
-        price: 28000
+        price: 30000
       },
-      gato: {
-        color: '#61A5C2',
-        price: 28000
-      },
-      plymouth: {
-        color: '#89C2D9',
-        price: 27000
+      z42: {
+        color: '#2C7DA0',
+        price: 30000
       },
       ragnar: {
         color: '#A9D6E5',
-        price: 27000
+        price: 30000
+      },
+      plymouth: {
+        color: '#89C2D9',
+        price: 30000
+      },
+      vallejo: {
+        color: '#89C2D9',
+        price: 19300
       }
     }
   }
