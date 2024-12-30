@@ -342,6 +342,9 @@ MxCoalChart.prototype.changeShip = function () {
     chrome.storage.local.get(this.lastAccountId, items => {
       if (items && items[this.lastAccountId] && items[this.lastAccountId]['data']) {
         var ships = items[this.lastAccountId]['ships'] || {};
+        if (Array.isArray(ships)) {
+          ships = {};
+        }
         ships[this.columnLabel] = [this.shipSelect.value, this.discountCheckbox.checked];
         items[this.lastAccountId]['ships'] = ships;
         chrome.storage.local.set(items, () => {
