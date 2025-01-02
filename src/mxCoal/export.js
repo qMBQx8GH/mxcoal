@@ -29,6 +29,43 @@ function saveData(ctx) {
   });
 }
 
+function mergeData(ctx) {
+  const data = JSON.parse(ctx.value);
+  console.info(data);
+  for (const accountId in data) {
+    chrome.storage.local.get(accountId, items => {
+      var dates = {};
+      if (items && items[accountId] && items[accountId]['data']) {
+        for (const x in items[accountId]['data']) {
+          const dateData = items[accountId]['data'][x];
+          dates[dateData[0]] = dateData;
+        }
+      }
+      if (data[accountId]['data']) {
+        for (const x in data[accountId]['data']) {
+          const dateData = data[accountId]['data'][x];
+          dates[dateData[0]] = dateData;
+        }
+      }
+      var dateList = Object.keys(dates);
+      if (dateList.length) {
+        dateList.sort().reverse();
+        var modified = {};
+        modified[accountId] = {
+          data: [],
+          ships: items[accountId] && items[accountId]['ships'] ? items[accountId]['ships'] : {},
+          info: items[accountId] && items[accountId]['info'] ? items[accountId]['info'] : {},
+        };
+        for (const x in dateList) {
+          modified[accountId].data.push(dates[dateList[x]]);
+        }
+        console.info(modified);
+        chrome.storage.local.set(modified);
+      }
+    });
+  }
+}
+
 function downloadData(ctx) {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(
@@ -62,6 +99,7 @@ function uploadData(evt) {
   reader.readAsText(f);
 }
 
+document.getElementById('mergeData').addEventListener('click', function () { mergeData(document.getElementById('myData')); }, false);
 document.getElementById('saveData').addEventListener('click', function () { saveData(document.getElementById('myData')); }, false);
 document.getElementById('displayData').addEventListener('click', function () { displayData(document.getElementById('myData')); }, false);
 document.getElementById('downloadData').addEventListener('click', function () { downloadData(document.getElementById('myData')); }, false);
